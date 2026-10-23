@@ -8,7 +8,7 @@ from app.core.config import settings
 # Engine configuration
 connect_args = {"check_same_thread": False} if settings.is_sqlite else {}
 engine = create_engine(
-    settings.DATABASE_URL,
+    settings.sqlalchemy_database_url,
     connect_args=connect_args,
     pool_pre_ping=True,
     future=True,

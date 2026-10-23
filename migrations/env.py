@@ -18,7 +18,7 @@ from app.models import Base
 config = context.config
 
 # Set sqlalchemy.url from our application settings
-config.set_main_option("sqlalchemy.url", settings.DATABASE_URL)
+config.set_main_option("sqlalchemy.url", settings.sqlalchemy_database_url)
 
 # Interpret the config file for Python logging.
 if config.config_file_name is not None:

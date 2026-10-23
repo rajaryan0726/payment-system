@@ -44,6 +44,16 @@ class Settings(BaseSettings):
     def is_sqlite(self) -> bool:
         return self.DATABASE_URL.startswith("sqlite")
 
+    @property
+    def sqlalchemy_database_url(self) -> str:
+        """Adapts cloud provider database URLs (like Render/Heroku postgres://) to SQLAlchemy psycopg2."""
+        url = self.DATABASE_URL
+        if url.startswith("postgres://"):
+            return url.replace("postgres://", "postgresql+psycopg2://", 1)
+        elif url.startswith("postgresql://") and not url.startswith("postgresql+"):
+            return url.replace("postgresql://", "postgresql+psycopg2://", 1)
+        return url
+
     def validate_production_guards(self) -> None:
         """Enforces critical security guards before starting in production."""
         if self.is_production:
