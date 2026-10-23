@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "bhiv-payment-service"
 version = "0.1.0"
@@ -28,6 +32,11 @@ dev = [
     "pytest-cov>=5.0.0",
     "requests>=2.32.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["app*"]
+exclude = ["tests*", "migrations*", "client_sdk*", "scripts*"]
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
