@@ -1,0 +1,41 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: bhiv_payment_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: bhiv_payments
+      POSTGRES_USER: bhiv_user
+      POSTGRES_PASSWORD: bhiv_secure_password_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U bhiv_user -d bhiv_payments"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  payment-service:
+    build: .
+    container_name: bhiv_payment_service
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_ENV: development
+      DEBUG: "true"
+      DATABASE_URL: postgresql+psycopg2://bhiv_user:bhiv_secure_password_2026@db:5432/bhiv_payments
+      PAYMENT_PROVIDER: razorpay
+      RAZORPAY_KEY_ID: rzp_test_TrSyqGLleVbYzx
+      RAZORPAY_KEY_SECRET: dcM2eB9TLDUNgry2BU4CxaLV
+      RAZORPAY_WEBHOOK_SECRET: test_webhook_secret_bhiv_2026
+      ADMIN_API_KEY: bhiv_admin_dev_secret_key_2026
+      LOG_LEVEL: INFO
+    ports:
+      - "8000:8000"
+
+volumes:
+  pgdata:
